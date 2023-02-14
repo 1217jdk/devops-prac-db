@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: spring-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-server
+  template:
+    metadata:
+      name: my-spring
+      labels:
+        app: spring-server
+    spec:
+      containers:
+      - name: spring
+        image: 1217jdk/devops-prac-db:0.1
+        ports:
+        - containerPort: 8080  
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-info
+              key: host
+        - name: MYSQL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-info
+              key: port
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-info
+              key: database
+        - name: MYSQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-auth
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-auth
+              key: password
